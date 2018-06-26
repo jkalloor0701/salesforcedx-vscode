@@ -66,6 +66,7 @@ import { isDemoMode } from './modes/demo-mode';
 import { notificationService } from './notifications';
 import { CANCEL_EXECUTION_COMMAND, cancelCommandExecution } from './statuses';
 import { CancellableStatusBar, taskViewService } from './statuses';
+import { createReporter, reporterMessage } from './telemetry';
 import { ManifestEditor } from './webviewPanels/manifestEditor';
 
 function registerCommands(
@@ -328,6 +329,9 @@ function registerIsvAuthWatcher(): vscode.Disposable {
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log('SFDX CLI Extension Activated');
+  console.log('activating core ', reporterMessage);
+  const reporter = createReporter(context);
+  reporter.sendTelemetryEvent('activationEvent', { core: 'some string' });
 
   // Context
   let sfdxProjectOpened = false;

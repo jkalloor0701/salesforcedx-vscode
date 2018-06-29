@@ -445,12 +445,7 @@ export function deactivate(): Promise<void> {
   console.log('SFDX CLI Extension Deactivated');
 
   // Send metric data.
-  /* const reporter = telemetryService.getReporter();
-  if (reporter !== null) {
-    reporter.sendTelemetryEvent('deactivateEvent', {
-      core: 'Extension being deactivated'
-    });
-  } */
+  telemetryService.sendExtensionDeactivationEvent();
   decorators.disposeTraceFlagExpiration();
   return turnOffLogging();
 }

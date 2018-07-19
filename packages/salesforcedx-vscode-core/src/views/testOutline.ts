@@ -6,7 +6,6 @@ import {
   CliCommandExecutor,
   Command
 } from '@salesforce/salesforcedx-utils-vscode/out/src/cli';
-import { CommandOutput } from '@salesforce/salesforcedx-utils-vscode/out/src/cli/commandOutput';
 import {
   ContinueResponse
 } from '@salesforce/salesforcedx-utils-vscode/out/src/types';

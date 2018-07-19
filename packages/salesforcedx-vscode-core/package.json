@@ -102,12 +102,21 @@
           "command": "sfdx.force.test.view.run",
           "when": "view == sfdx.force.test.view",
           "group": "navigation"
+        },
+        {
+          "command": "sfdx.force.test.view.refresh",
+          "when": "view == sfdx.force.test.view",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "sfdx.force.task.stop",
           "when": "view == sfdx.force.tasks.view"
+        },
+        {
+          "command": "sfdx.force.test.view.showError",
+          "when": "view == sfdx.force.test.view && viewItem == apexTest"
         }
       ],
       "explorer/context": [
@@ -325,6 +334,18 @@
           "light": "../../resources/run.svg",
           "dark": "../../resources/run.svg"
         }
+      },
+      {
+        "command": "sfdx.force.test.view.refresh",
+        "title": "Refresh Tests",
+        "icon": {
+          "light": "../../resources/light/refresh.svg",
+          "dark": "../../resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "sfdx.force.test.view.showError",
+        "title": "Display Errors"
       },
       {
         "command": "sfdx.force.auth.web.login",

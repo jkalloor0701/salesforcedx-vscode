@@ -414,9 +414,21 @@ export async function activate(context: vscode.ExtensionContext) {
   const testProvider = vscode.window.registerTreeDataProvider('sfdx.force.test.view', testOutlineProvider);
   context.subscriptions.push(testProvider);
 
-  // Run Test Button on Test View
+  // Run Test Button on Test View command
   vscode.commands.registerCommand('sfdx.force.test.view.run', () => testOutlineProvider.runApexTests());
+  // Show Error Message command
+  vscode.commands.registerCommand('sfdx.force.test.view.showError', test => testOutlineProvider.showErrorMessage(test));
+  // Refresh Test View command
+  vscode.commands.registerCommand('sfdx.force.test.view.refresh', () => testOutlineProvider.refresh());
 
+  // Editor change
+  vscode.window.onDidChangeActiveTextEditor(() => {
+    testOutlineProvider.updateDecorations();
+  });
+
+  vscode.window.onDidChangeTextEditorSelection(() => {
+    testOutlineProvider.clearDecorations();
+  });
   // Task View
   const treeDataProvider = vscode.window.registerTreeDataProvider(
     'sfdx.force.tasks.view',

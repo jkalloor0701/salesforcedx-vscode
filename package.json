@@ -47,6 +47,14 @@
       "lerna exec --bail=false --ignore salesforcedx-vscode -- snyk test --severity-threshold=medium --show-vulnerable-paths=false",
     "synk:monitor":
       "lerna exec --bail=false --ignore salesforcedx-vscode -- snyk monitor --severity-threshold=medium --show-vulnerable-paths=false --org=vazexqi",
+<<<<<<< HEAD
+=======
+    "start-webview": "npm run start --prefix=packages/salesforcedx-webview-ui",
+    "build-webview": "npm run build --prefix=packages/salesforcedx-webview-ui",
+    "test-webview": "npm run test --prefix=packages/salesforcedx-webview-ui",
+    "bundle-webview":
+      "npm run compile --prefix=packages/salesforcedx-webview-ui",
+>>>>>>> Appveyor (#507)
     "aggregateJUnit": "node scripts/aggregate-junit-xml.js"
   },
   "repository": {

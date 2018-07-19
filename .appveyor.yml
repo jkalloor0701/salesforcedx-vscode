@@ -54,8 +54,6 @@ test_script:
       # Upload results for AppVeyor test tab
       "Uploading Test Results:`n"
       (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)" , (Resolve-Path .\junit-aggregate.xml) )
-<<<<<<< HEAD
-=======
       [xml]$results = Get-Content junit-aggregate.xml
       $failure = $results.SelectSingleNode("//failure")
       if ($failure -ne $null) 
@@ -63,7 +61,6 @@ test_script:
           $host.SetShouldExit(1)
           Write-Host "Forcing build failure due to test failure(s) :'("
       }
->>>>>>> Appveyor (#507)
 
 artifacts:
   - path: '**\*.vsix'
@@ -73,16 +70,4 @@ artifacts:
 
 on_finish:
   - del C:\projects\devhub.key
-<<<<<<< HEAD
   - codecov --disable=gcov
-  - ps: |
-      [xml]$results = Get-Content junit-aggregate.xml
-        $failure = $results.SelectSingleNode("//failure")
-        if ($failure -ne $null) 
-        { 
-            $host.SetShouldExit(1)
-            Write-Host "Forcing build failure due to test failure(s) :'("
-        }
-=======
-  - codecov --disable=gcov
->>>>>>> Appveyor (#507)

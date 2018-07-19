@@ -414,7 +414,6 @@ export async function activate(context: vscode.ExtensionContext) {
   const testProvider = vscode.window.registerTreeDataProvider('sfdx.force.test.view', testOutlineProvider);
   context.subscriptions.push(testProvider);
 
-<<<<<<< HEAD
   // Run Test Button on Test View command
   vscode.commands.registerCommand('sfdx.force.test.view.run', () => testOutlineProvider.runApexTests());
   // Show Error Message command
@@ -430,11 +429,6 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.window.onDidChangeTextEditorSelection(() => {
     testOutlineProvider.clearDecorations();
   });
-=======
-  // Run Test Button on Test View
-  vscode.commands.registerCommand('sfdx.force.test.view.run', () => testOutlineProvider.runApexTests());
-
->>>>>>> Initial save for testOutlineCode
   // Task View
   const treeDataProvider = vscode.window.registerTreeDataProvider(
     'sfdx.force.tasks.view',

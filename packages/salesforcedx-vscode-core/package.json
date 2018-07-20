@@ -93,6 +93,11 @@
           "command": "sfdx.force.source.retrieve.current.file",
           "when":
             "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
+        },
+        {
+          "command": "sfdx.force.source.deploy.current.file",
+          "when":
+            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
         }
       ],
       "explorer/context": [
@@ -142,6 +147,7 @@
           "command": "sfdx.force.source.retrieve",
           "when":
             "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
+<<<<<<< HEAD
 =======
           "when": "explorerResourceIsFolder && resourceFilename != aura && resourceFilename != lightningcomponents && sfdx:project_opened"
 >>>>>>> v43.8.0
@@ -149,6 +155,13 @@
           "when":
             "explorerResourceIsFolder && resourceFilename != aura && resourceFilename != lightningcomponents && sfdx:project_opened"
 >>>>>>> Reformat for lerna
+=======
+        },
+        {
+          "command": "sfdx.force.source.deploy",
+          "when":
+            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
+>>>>>>> Add 'SFDX: Deploy Source to Org' command (#531)
         }
       ],
       "commandPalette": [
@@ -325,7 +338,15 @@
           "when": "false"
         },
         {
+          "command": "sfdx.force.source.deploy",
+          "when": "false"
+        },
+        {
           "command": "sfdx.force.source.retrieve.current.file",
+          "when": "false"
+        },
+        {
+          "command": "sfdx.force.source.deploy.current.file",
           "when": "false"
         }
       ]
@@ -506,6 +527,14 @@
       {
         "command": "sfdx.force.source.retrieve.current.file",
         "title": "%force_source_retrieve_this_source_file_text%"
+      },
+      {
+        "command": "sfdx.force.source.deploy",
+        "title": "%force_source_deploy_text%"
+      },
+      {
+        "command": "sfdx.force.source.deploy.current.file",
+        "title": "%force_source_deploy_this_source_file_text%"
       }
     ],
     "configuration": {

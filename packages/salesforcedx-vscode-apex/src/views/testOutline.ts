@@ -303,7 +303,7 @@ export class ApexTestOutlineProvider implements vscode.TreeDataProvider<Test> {
       tempFolder = tempFolder + crypto.randomBytes(16).toString('hex');
     }
     return tempFolder;
-    //return '/tmp';
+    // return '/tmp';
   }
 
   public async runApexTests(): Promise<void> {

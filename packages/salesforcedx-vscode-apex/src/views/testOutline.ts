@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 import crypto = require('crypto');
 import events = require('events');
 import fs = require('fs');
-import shell = require('shelljs');
+// import shell = require('shelljs');
 import ospath = require('path');
 import {
   CliCommandExecutor,
@@ -295,15 +295,15 @@ export class ApexTestOutlineProvider implements vscode.TreeDataProvider<Test> {
   }
 
   public getTempFolder(): string {
-    // let tempFolder = ospath.resolve(
-    //   vscode.workspace.workspaceFolders![0].uri.path,
-    //   'tmp'
-    // );
-    // while (fs.existsSync(tempFolder)) {
-    //   tempFolder = tempFolder + crypto.randomBytes(16).toString('hex');
-    // }
-    // return tempFolder;
-    return '/tmp';
+    let tempFolder = ospath.resolve(
+      vscode.workspace.workspaceFolders![0].uri.path,
+      'tmp'
+    );
+    while (fs.existsSync(tempFolder)) {
+      tempFolder = tempFolder + crypto.randomBytes(16).toString('hex');
+    }
+    return tempFolder;
+    //return '/tmp';
   }
 
   public async runApexTests(): Promise<void> {
@@ -445,7 +445,7 @@ export class ApexTestGroup extends Test {
   public updatePassFailLabel() {
     this.passing = 0;
     this.children.forEach(child => {
-      if ((child as ApexTest).outcome == 'Pass') {
+      if ((child as ApexTest).outcome === 'Pass') {
         this.passing++;
       }
     });

@@ -130,7 +130,7 @@ export async function getApexClassFiles(): Promise<vscode.Uri[]> {
   const jsonProject = (await vscode.workspace.findFiles('**/sfdx-project.json'))[0];
   const innerText = fs.readFileSync(jsonProject.path);
   const jsonObject = JSON.parse(innerText.toString());
-  let packageDirectories = jsonObject.packageDirectories || jsonObject.PackageDirectories;
+  const packageDirectories = jsonObject.packageDirectories || jsonObject.PackageDirectories;
   const allClasses = new Array<vscode.Uri>();
   for (const packageDirectory of packageDirectories) {
     const pattern = path.join(packageDirectory.path, '**/*.cls');

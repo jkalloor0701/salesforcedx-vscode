@@ -93,6 +93,11 @@
           "command": "sfdx.force.source.retrieve.current.file",
           "when":
             "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
+        },
+        {
+          "command": "sfdx.force.source.deploy.current.file",
+          "when":
+            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
         }
       ],
       "explorer/context": [
@@ -138,6 +143,11 @@
         },
         {
           "command": "sfdx.force.source.retrieve",
+          "when":
+            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
+        },
+        {
+          "command": "sfdx.force.source.deploy",
           "when":
             "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
         }
@@ -517,6 +527,11 @@
           "type": ["boolean"],
           "default": false,
           "description": "%retrieve_test_code_coverage_text%"
+        },
+        "salesforcedx-vscode-core.telemetry.enabled": {
+          "type": ["boolean"],
+          "default": true,
+          "description": "%telemetry_enabled_description%"
         }
       }
     }

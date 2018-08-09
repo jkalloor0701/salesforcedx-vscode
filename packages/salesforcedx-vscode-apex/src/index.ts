@@ -14,6 +14,7 @@ import {
   DEBUGGER_LINE_BREAKPOINTS
 } from './constants';
 import * as languageServer from './languageServer';
+import { telemetryService } from './telemetry';
 import {
   ApexLSPConverter,
   ApexTestMethod,
@@ -21,12 +22,27 @@ import {
 } from './views/LSPConverter';
 import { ApexTestOutlineProvider } from './views/testOutline';
 
+const sfdxCoreExtension = vscode.extensions.getExtension(
+  'salesforce.salesforcedx-vscode-core'
+);
+
 let languageClient: LanguageClient | undefined;
 let languageClientReady = false;
 
 export async function activate(context: vscode.ExtensionContext) {
   const rootPath = vscode.workspace.workspaceFolders![0].name;
   const testOutlineProvider = new ApexTestOutlineProvider(rootPath, null);
+  // Telemetry
+  if (sfdxCoreExtension && sfdxCoreExtension.exports) {
+    sfdxCoreExtension.exports.telemetryService.showTelemetryMessage();
+
+    telemetryService.initializeService(
+      sfdxCoreExtension.exports.telemetryService.getReporter(),
+      sfdxCoreExtension.exports.telemetryService.isTelemetryEnabled()
+    );
+  }
+
+  telemetryService.sendExtensionActivationEvent();
 
   languageClient = await languageServer.createLanguageServer(context);
   if (languageClient) {
@@ -143,4 +159,6 @@ export function isLanguageClientReady(): boolean {
 }
 
 // tslint:disable-next-line:no-empty
-export function deactivate() {}
+export function deactivate() {
+  telemetryService.sendExtensionDeactivationEvent();
+}

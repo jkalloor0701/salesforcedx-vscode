@@ -39,15 +39,12 @@ const NO_TESTS_DESCRIPTION = nls.localize(
 const sfdxCoreExports = vscode.extensions.getExtension(
   'salesforce.salesforcedx-vscode-core'
 )!.exports;
-const ProgressNotification = sfdxCoreExports.ProgressNotification;
 const EmptyParametersGatherer = sfdxCoreExports.EmptyParametersGatherer;
 const SfdxCommandlet = sfdxCoreExports.SfdxCommandlet;
 const ForceApexTestRunCodeActionExecutor =
   sfdxCoreExports.ForceApexTestRunCodeActionExecutor;
 const SfdxWorkspaceChecker = sfdxCoreExports.SfdxWorkspaceChecker;
 const channelService = sfdxCoreExports.channelService;
-const notificationService = sfdxCoreExports.notificationService;
-const taskViewService = sfdxCoreExports.taskViewService;
 
 export class ApexTestOutlineProvider
   implements vscode.TreeDataProvider<TestNode> {
@@ -459,19 +456,10 @@ class ReadableApexTestRunCodeActionExecutor extends (ForceApexTestRunCodeActionE
       this.apexTestOutline.readJSONFile(this.outputToJson);
     });
 
-    channelService.streamCommandOutput(execution);
-
-    if (this.showChannelOutput) {
-      channelService.showChannelOutput();
-    }
-
-    ProgressNotification.show(execution, cancellationTokenSource);
-
-    notificationService.reportCommandExecutionStatus(
+    super.attachExecution(
       execution,
+      cancellationTokenSource,
       cancellationToken
     );
-
-    taskViewService.addCommandExecution(execution, cancellationTokenSource);
   }
 }

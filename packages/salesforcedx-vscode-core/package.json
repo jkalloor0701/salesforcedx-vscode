@@ -14,8 +14,7 @@
     "color": "#ECECEC",
     "theme": "light"
   },
-  "aiKey": "ec3632a4-df47-47a4-98dc-8134cacbaf7e",
-  "version": "43.10.0",
+  "version": "43.8.0",
   "publisher": "salesforce",
   "license": "BSD-3-Clause",
   "engines": {
@@ -23,15 +22,14 @@
   },
   "categories": ["Other"],
   "dependencies": {
-    "@salesforce/salesforcedx-sobjects-faux-generator": "43.10.0",
-    "@salesforce/salesforcedx-utils-vscode": "43.10.0",
+    "@salesforce/salesforcedx-sobjects-faux-generator": "43.8.0",
+    "@salesforce/salesforcedx-utils-vscode": "43.8.0",
     "adm-zip": "0.4.7",
     "glob": "^7.1.2",
     "moment": "2.20.1",
     "rxjs": "^5.4.1",
     "sanitize-filename": "^1.6.1",
-    "shelljs": "^0.8.1",
-    "vscode-extension-telemetry": "0.0.17"
+    "shelljs": "^0.8.1"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.4.31",
@@ -71,7 +69,6 @@
   "activationEvents": [
     "workspaceContains:sfdx-project.json",
     "onCommand:sfdx.force.project.create",
-    "onCommand:sfdx.force.create.change.set.based",
     "onCommand:sfdx.debug.isv.bootstrap"
   ],
   "main": "./out/src",
@@ -94,11 +91,6 @@
       "editor/context": [
         {
           "command": "sfdx.force.source.retrieve.current.file",
-          "when":
-            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
-        },
-        {
-          "command": "sfdx.force.source.deploy.current.file",
           "when":
             "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
         }
@@ -141,10 +133,6 @@
         },
         {
           "command": "sfdx.force.apex.trigger.create",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
           "when":
             "explorerResourceIsFolder && resourceFilename != aura && resourceFilename != lightningcomponents && sfdx:project_opened"
         },
@@ -152,42 +140,6 @@
           "command": "sfdx.force.source.retrieve",
           "when":
             "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
-<<<<<<< HEAD
-=======
-          "when": "explorerResourceIsFolder && resourceFilename != aura && resourceFilename != lightningcomponents && sfdx:project_opened"
->>>>>>> v43.8.0
-=======
-          "when":
-            "explorerResourceIsFolder && resourceFilename != aura && resourceFilename != lightningcomponents && sfdx:project_opened"
->>>>>>> Reformat for lerna
-=======
-        },
-        {
-          "command": "sfdx.force.source.deploy",
-          "when":
-            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
->>>>>>> Add 'SFDX: Deploy Source to Org' command (#531)
-=======
-          "when": "explorerResourceIsFolder && resourceFilename != aura && resourceFilename != lightningcomponents && sfdx:project_opened"
-=======
-          "when":
-            "explorerResourceIsFolder && resourceFilename != aura && resourceFilename != lightningcomponents && sfdx:project_opened"
->>>>>>> Reformat for lerna
-        },
-        {
-          "command": "sfdx.force.source.retrieve",
-          "when":
-            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
-        },
-        {
-          "command": "sfdx.force.source.deploy",
-<<<<<<< HEAD
-          "when": "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
->>>>>>> v43.10.0
-=======
-          "when":
-            "sfdx:project_opened && config.salesforcedx-vscode-core.change_set_based_tools.enabled"
->>>>>>> Reformat for lerna
         }
       ],
       "commandPalette": [
@@ -364,15 +316,7 @@
           "when": "false"
         },
         {
-          "command": "sfdx.force.source.deploy",
-          "when": "false"
-        },
-        {
           "command": "sfdx.force.source.retrieve.current.file",
-          "when": "false"
-        },
-        {
-          "command": "sfdx.force.source.deploy.current.file",
           "when": "false"
         }
       ]
@@ -553,14 +497,6 @@
       {
         "command": "sfdx.force.source.retrieve.current.file",
         "title": "%force_source_retrieve_this_source_file_text%"
-      },
-      {
-        "command": "sfdx.force.source.deploy",
-        "title": "%force_source_deploy_text%"
-      },
-      {
-        "command": "sfdx.force.source.deploy.current.file",
-        "title": "%force_source_deploy_this_source_file_text%"
       }
     ],
     "configuration": {
@@ -581,11 +517,6 @@
           "type": ["boolean"],
           "default": false,
           "description": "%retrieve_test_code_coverage_text%"
-        },
-        "salesforcedx-vscode-core.telemetry.enabled": {
-          "type": ["boolean"],
-          "default": true,
-          "description": "%telemetry_enabled_description%"
         }
       }
     }

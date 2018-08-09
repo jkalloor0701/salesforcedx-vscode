@@ -449,7 +449,7 @@ class ReadableApexTestRunCodeActionExecutor extends (ForceApexTestRunCodeActionE
     const cancellationTokenSource = new vscode.CancellationTokenSource();
     const cancellationToken = cancellationTokenSource.token;
     const execution = new CliCommandExecutor(this.build(response.data), {
-      cwd: vscode.workspace.workspaceFolders![0].uri.path
+      cwd: vscode.workspace.rootPath
     }).execute(cancellationToken);
 
     execution.processExitSubject.subscribe(() => {

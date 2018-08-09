@@ -27,6 +27,7 @@ export const messages = {
   force_apex_test_run_codeAction_description_text: 'Run Apex test(s)',
   force_test_view_loading_message: 'Loading Apex tests ...',
   force_test_view_no_tests_message: 'No Apex Tests Found',
+  force_test_view_show_error_title: 'Show Error',
   force_test_view_no_tests_description:
     "Your project doesn't contain any Apex test methods. To run Apex tests, open a project that contains methods with @istest annotations or the testMethod keyword",
   wrong_java_version_text:

@@ -322,7 +322,7 @@ export abstract class TestNode extends vscode.TreeItem {
     this.name = label;
     this.command = {
       command: 'sfdx.force.test.view.showError',
-      title: 'show error',
+      title: nls.localize('force_test_view_show_error_title'),
       arguments: [this]
     };
   }

@@ -24,7 +24,7 @@ export const messages = {
   source_missing_text: '%s points to a missing folder',
   java_runtime_missing_text:
     'Java runtime could not be located. Set one using the salesforcedx-vscode-apex.java.home VS Code setting.',
-  force_apex_test_run_codeAction_description_text: 'Run Apex test(s)',
+  force_apex_test_run_description_text: 'Run Apex test(s)',
   force_test_view_loading_message: 'Loading Apex tests ...',
   force_test_view_no_tests_message: 'No Apex Tests Found',
   force_test_view_show_error_title: 'Show Error',

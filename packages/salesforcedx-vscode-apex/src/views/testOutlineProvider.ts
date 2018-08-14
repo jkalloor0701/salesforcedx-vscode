@@ -4,17 +4,9 @@
  * Licensed under the BSD 3-Clause license.
  * For full license text, see LICENSE.txt file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import * as os from 'os';
 import * as vscode from 'vscode';
-import events = require('events');
 import fs = require('fs');
 import ospath = require('path');
-import {
-  CliCommandExecutor,
-  Command
-} from '@salesforce/salesforcedx-utils-vscode/out/src/cli';
-import { ContinueResponse } from '@salesforce/salesforcedx-utils-vscode/out/src/types';
-import { getApexTests, isLanguageClientReady } from '..';
 import {
   APEX_GROUP_RANGE,
   DARK_BLUE_BUTTON,
@@ -24,27 +16,16 @@ import {
   LIGHT_GREEN_BUTTON,
   LIGHT_RED_BUTTON
 } from '../constants';
+import { getApexTests, isLanguageClientReady } from '../languageClientUtils';
 import { nls } from '../messages';
 import { ApexTestMethod } from './LSPConverter';
-import { FullTestResult, TestSummarizer } from './TestDataAccessObjects';
-
+import { FullTestResult, TestSummarizer } from './testDataAccessObjects';
 // Message
 const LOADING_MESSAGE = nls.localize('force_test_view_loading_message');
 const NO_TESTS_MESSAGE = nls.localize('force_test_view_no_tests_message');
 const NO_TESTS_DESCRIPTION = nls.localize(
   'force_test_view_no_tests_description'
 );
-
-// Import from core
-const sfdxCoreExports = vscode.extensions.getExtension(
-  'salesforce.salesforcedx-vscode-core'
-)!.exports;
-const EmptyParametersGatherer = sfdxCoreExports.EmptyParametersGatherer;
-const SfdxCommandlet = sfdxCoreExports.SfdxCommandlet;
-const ForceApexTestRunCodeActionExecutor =
-  sfdxCoreExports.ForceApexTestRunCodeActionExecutor;
-const SfdxWorkspaceChecker = sfdxCoreExports.SfdxWorkspaceChecker;
-const channelService = sfdxCoreExports.channelService;
 
 export class ApexTestOutlineProvider
   implements vscode.TreeDataProvider<TestNode> {
@@ -53,11 +34,9 @@ export class ApexTestOutlineProvider
   > = new vscode.EventEmitter<TestNode | undefined>();
   public onDidChangeTreeData = this.onDidChangeTestData.event;
 
-  private eventsEmitter = new events.EventEmitter();
-
   private apexTestMap: Map<string, TestNode> = new Map<string, TestNode>();
   private rootNode: TestNode | null;
-  private static testStrings: Set<string> = new Set<string>();
+  public testStrings: Set<string> = new Set<string>();
   private path: string;
   private apexTestInfo: ApexTestMethod[] | null;
 
@@ -66,14 +45,14 @@ export class ApexTestOutlineProvider
     this.path = path;
     this.apexTestInfo = apexTestInfo;
     this.getAllApexTests(this.path);
-    this.eventsEmitter.on('Show Highlight', this.updateSelection);
   }
 
   public getHead(): TestNode {
     if (this.rootNode === null) {
       return this.getAllApexTests(this.path);
+    } else {
+      return this.rootNode;
     }
-    return this.rootNode;
   }
 
   public getChildren(element: TestNode): TestNode[] {
@@ -122,7 +101,7 @@ export class ApexTestOutlineProvider
   public async refresh() {
     this.rootNode = null; // Reset tests
     this.apexTestMap.clear();
-    ApexTestOutlineProvider.testStrings.clear();
+    this.testStrings.clear();
     this.apexTestInfo = null;
     if (isLanguageClientReady()) {
       this.apexTestInfo = await getApexTests();
@@ -136,7 +115,7 @@ export class ApexTestOutlineProvider
       // Starting Out
       this.rootNode = new ApexTestGroupNode('ApexTests', null);
     }
-    // Check if lsp worked is ready
+    this.rootNode.children = new Array<TestNode>();
     if (this.apexTestInfo) {
       this.apexTestInfo.forEach(test => {
         let apexGroup = this.apexTestMap.get(
@@ -160,98 +139,15 @@ export class ApexTestOutlineProvider
         ) {
           this.rootNode.children.push(apexGroup);
         }
-        ApexTestOutlineProvider.testStrings.add(apexGroup.name);
+        this.testStrings.add(apexGroup.name);
       });
     }
     return this.rootNode;
   }
 
-  public async showErrorMessage(test: TestNode) {
-    let position: vscode.Range | number = test.location!.range;
-    if (test instanceof ApexTestNode) {
-      const errorMessage = test.errorMessage;
-      if (errorMessage && errorMessage !== '') {
-        const stackTrace = test.stackTrace;
-        position =
-          parseInt(
-            stackTrace.substring(
-              stackTrace.indexOf('line') + 4,
-              stackTrace.indexOf(',')
-            ),
-            10
-          ) - 1; // Remove one because vscode location is zero based
-        channelService.appendLine('-----------------------------------------');
-        channelService.appendLine(stackTrace);
-        channelService.appendLine(errorMessage);
-        channelService.appendLine('-----------------------------------------');
-        channelService.showChannelOutput();
-      }
-    }
-    if (test.location) {
-      vscode.window.showTextDocument(test.location.uri).then(() => {
-        this.eventsEmitter.emit('Show Highlight', position);
-      });
-    }
-  }
-
-  public async runSingleTest(test: TestNode) {
-    const tmpFolder = this.getTempFolder();
-    const builder = new ReadableApexTestRunCodeActionExecutor(
-      [test.name],
-      false,
-      tmpFolder,
-      this
-    );
-    const commandlet = new SfdxCommandlet(
-      new SfdxWorkspaceChecker(),
-      new EmptyParametersGatherer(),
-      builder
-    );
-    await commandlet.run();
-  }
-
-  public updateSelection(index: vscode.Range | number) {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      if (index instanceof vscode.Range) {
-        editor.selection = new vscode.Selection(index.start, index.end);
-        editor.revealRange(index); // Show selection
-      } else {
-        const line = editor.document.lineAt(index);
-        const startPos = new vscode.Position(
-          line.lineNumber,
-          line.firstNonWhitespaceCharacterIndex
-        );
-        editor.selection = new vscode.Selection(startPos, line.range.end);
-        editor.revealRange(line.range); // Show selection
-      }
-    }
-  }
-
-  public getTempFolder(): string {
-    return os.tmpdir();
-  }
-
-  public async runApexTests(): Promise<void> {
-    await this.refresh();
-    const tmpFolder = this.getTempFolder();
-    const builder = new ReadableApexTestRunCodeActionExecutor(
-      Array.from(ApexTestOutlineProvider.testStrings.values()),
-      false,
-      tmpFolder,
-      this
-    );
-    const commandlet = new SfdxCommandlet(
-      new SfdxWorkspaceChecker(),
-      new EmptyParametersGatherer(),
-      builder
-    );
-    await commandlet.run();
-  }
-
   public readJSONFile(folderName: string) {
     const jsonSummary = this.getJSONFileOutput(folderName);
-    this.UpdateTestsFromJSON(jsonSummary);
+    this.updateTestsFromJSON(jsonSummary);
     this.onDidChangeTestData.fire();
   }
 
@@ -273,7 +169,7 @@ export class ApexTestOutlineProvider
     return jsonSummary;
   }
 
-  private UpdateTestsFromJSON(jsonSummary: FullTestResult) {
+  private updateTestsFromJSON(jsonSummary: FullTestResult) {
     const groups = new Set<ApexTestGroupNode>();
     for (const testResult of jsonSummary.tests) {
       const apexGroupName = testResult.FullName.split('.')[0];
@@ -409,57 +305,4 @@ export class ApexTestNode extends TestNode {
   }
 
   public contextValue = 'apexTest';
-}
-
-class ReadableApexTestRunCodeActionExecutor extends (ForceApexTestRunCodeActionExecutor as {
-  new (test: string, shouldGetCodeCoverage: boolean): any;
-}) {
-  private outputToJson: string;
-  private apexTestOutline: ApexTestOutlineProvider;
-
-  public constructor(
-    tests: string[],
-    shouldGetCodeCoverage: boolean,
-    outputToJson: string,
-    apexTestOutline: ApexTestOutlineProvider
-  ) {
-    super(tests.join(','), shouldGetCodeCoverage);
-    this.outputToJson = outputToJson;
-    this.apexTestOutline = apexTestOutline;
-  }
-
-  public build(data: {}): Command {
-    this.builder = this.builder
-      .withDescription(
-        nls.localize('force_apex_test_run_codeAction_description_text')
-      )
-      .withArg('force:apex:test:run')
-      .withFlag('--tests', this.test)
-      .withFlag('--resultformat', 'human')
-      .withFlag('--outputdir', this.outputToJson)
-      .withFlag('--loglevel', 'error');
-
-    if (this.shouldGetCodeCoverage) {
-      this.builder = this.builder.withArg('--codecoverage');
-    }
-    return this.builder.build();
-  }
-
-  public execute(response: ContinueResponse<{}>) {
-    const cancellationTokenSource = new vscode.CancellationTokenSource();
-    const cancellationToken = cancellationTokenSource.token;
-    const execution = new CliCommandExecutor(this.build(response.data), {
-      cwd: vscode.workspace.rootPath
-    }).execute(cancellationToken);
-
-    execution.processExitSubject.subscribe(() => {
-      this.apexTestOutline.readJSONFile(this.outputToJson);
-    });
-
-    super.attachExecution(
-      execution,
-      cancellationTokenSource,
-      cancellationToken
-    );
-  }
 }

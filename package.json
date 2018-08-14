@@ -7,7 +7,7 @@
     "husky": "0.14.3",
     "istanbul": "1.1.0-alpha.1",
     "lerna": "2.4.0",
-    "prettier": "1.6.0",
+    "prettier": "1.14.2",
     "remap-istanbul": "^0.9.5",
     "shx": "0.2.2",
     "snyk": "^1.82.1",
@@ -31,8 +31,6 @@
     "test:integration": "lerna run test:integration --concurrency 1 --stream",
     "test:without-system-tests":
       "lerna exec --ignore system-tests --concurrency 1 --stream --bail=false -- npm run test",
-    "test:system-tests":
-      "lerna run test --scope system-tests --concurrency 1 --stream",
     "coverage:system-tests":
       "lerna run coverage --scope system-tests --concurrency 1 --stream",
     "vscode:package":
